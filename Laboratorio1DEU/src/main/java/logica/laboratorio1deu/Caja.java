@@ -8,87 +8,87 @@ package logica.laboratorio1deu;
  *
  * @author Bravo
  */
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 public class Caja {
 
-    private JTable tablaCaja;
-    private DefaultTableModel modeloCaja;
     private int totalClientesAtendidos;
     private int sumaTiempoAtencion;
+    private Cliente clienteActual;
+    private int tiempoActual;
+    private List<Cliente> filaEspera;
+    private int numeroCaja;
+    private int tiempoTotalAtencion;
+    private int tiempoClienteActual;
+    private int clientesAtendidos;
 
-    public Caja(JTable tablaCaja) {
-        this.tablaCaja = tablaCaja;
-        modeloCaja = (DefaultTableModel) tablaCaja.getModel();
-        totalClientesAtendidos = 0;
-        sumaTiempoAtencion = 0;
+    public Caja(int numeroCaja) {
+        this.numeroCaja = numeroCaja;
+        this.clienteActual = null;
+        clientesAtendidos = 0;
+        this.tiempoTotalAtencion = 0;
+        this.tiempoClienteActual = 0;
     }
 
     public int totalClientesAtendidos() {
         return totalClientesAtendidos;
     }
 
-    public int getSumaTiempoAtencion() {
-        return sumaTiempoAtencion;
+    public int getNumeroCaja() {
+        return numeroCaja;
     }
 
-    public void aumentarSumaTiempoAtencion(int tiempo) {
-        sumaTiempoAtencion += tiempo;
+    public Cliente getClienteActual() {
+        return clienteActual;
     }
 
-    public JTable getTablaCaja() {
-        return tablaCaja;
+    public int getClientesAtendidos() {
+        return clientesAtendidos;
     }
 
-    public void setTablaCaja(JTable tablaCaja) {
-        this.tablaCaja = tablaCaja;
+    public int getTiempoAtencionTotal() {
+        return tiempoTotalAtencion;
     }
 
-    public DefaultTableModel getModeloCaja() {
-        return modeloCaja;
+    public int incrementarClientesAtendidos() {
+        return clientesAtendidos++;
     }
 
-    public void setModeloCaja(DefaultTableModel modeloCaja) {
-        this.modeloCaja = modeloCaja;
+    public boolean estaLibre() {
+        return clienteActual == null;
     }
 
-    public void agregarCliente(String prioridad, int tiempoTramite) {
-        getModeloCaja().addRow(new Object[]{prioridad, tiempoTramite, tiempoTramite});
+    public void atenderCliente(Cliente cliente) {
+        clienteActual = cliente;
+        tiempoClienteActual = 0;
     }
 
-    public boolean estaDisponible() {
-        return getModeloCaja().getRowCount() == 0;
-    }
-
-    public void atenderClientes() {
-        for (int i = 0; i < getModeloCaja().getRowCount(); i++) {
-            int tiempoRestante = (int) getModeloCaja().getValueAt(i, 2);
-            if (tiempoRestante > 0) {
-                getModeloCaja().setValueAt(tiempoRestante - 1, i, 2);
-            } else {
-                getModeloCaja().removeRow(i);
-                i--;
+    public void atenderCliente() {
+        if (clienteActual != null) {
+            clienteActual.aumentarTiempo();
+            tiempoClienteActual++;
+            tiempoTotalAtencion++;
+            if (clienteActual.getTiempo() >= clienteActual.getTiempoTramiteSegundos()) {
+                clienteActual = null;
             }
         }
     }
 
-    public void actualizarCaja() {
-        for (int i = 0; i < getModeloCaja().getRowCount(); i++) {
-            int tiempoRestante = (int) getModeloCaja().getValueAt(i, 2);
-            getModeloCaja().setValueAt(tiempoRestante, i, 2);
-        }
-    }
+    @Override
+    public String toString() {
+        String estado;
+        if (clienteActual == null) {
+            estado = "------------------------------------" + "\n"
+                    + "Caja " + numeroCaja + ": Libre" + "\n"
+                    + "Caja " + numeroCaja + " tiempo total de atención: " + tiempoTotalAtencion + " minutos";
+        } else {
+            estado = "------------------------------------" + "\n"
+                    + "Caja " + numeroCaja + ": Atendiendo a Cliente " + clienteActual.getNumeroCliente()
+                    + " Prioridad " + clienteActual.getPrioridad() + " Tiempo que lleva en la caja: " + clienteActual.getTiempo() + " minutos" + "\n"
+                    + "Caja " + numeroCaja + " tiempo total de atención: " + tiempoTotalAtencion + " minutos";
 
-    public void eliminarClienteActual() {
-        getModeloCaja().removeRow(0);
-    }
-
-    public boolean clienteActualTerminado() {
-        if (getModeloCaja().getRowCount() > 0) {
-            int tiempoRestante = (int) getModeloCaja().getValueAt(0, 2);
-            return tiempoRestante == 0;
         }
-        return false;
+
+        return estado;
     }
 }

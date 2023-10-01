@@ -15,33 +15,37 @@ public class Cliente {
     private int numeroCliente;
     private String prioridad;
     private int tiempoTramiteSegundos;
+    private int tiempo;
 
     public Cliente(int numeroCliente) {
         this.numeroCliente = numeroCliente;
         this.prioridad = generarPrioridadAleatoria(numeroCliente);
         this.tiempoTramiteSegundos = generarTiempoAleatorio();
-    }
-
-    public Cliente(String prioridad, int tiempoTramiteSegundos) {
-        this.prioridad = generarPrioridadAleatoria(numeroCliente);
-        this.tiempoTramiteSegundos = generarTiempoAleatorio();
-    }
-
-    public int getNumeroCliente() {
-        return numeroCliente;
+        this.tiempo = 0;
     }
 
     public String getPrioridad() {
         return prioridad;
     }
 
-    public int getTiempoTramiteSegundos() {
-        return tiempoTramiteSegundos;
+    public int getTiempo() {
+        return tiempo;
+    }
+
+    public void aumentarTiempo() {
+        tiempo++;
     }
 
     private int generarTiempoAleatorio() {
-        Random rand = new Random();
-        return rand.nextInt(24) + 2;// 2 segundos como mínimo, 25 segundos como máximo
+        return (int) (Math.random() * 23) + 2; // Entre 2 y 24 
+    }
+
+    public int getNumeroCliente() {
+        return numeroCliente;
+    }
+
+    public int getTiempoTramiteSegundos() {
+        return tiempoTramiteSegundos;
     }
 
     private String generarPrioridadAleatoria(int numeroCliente) {
