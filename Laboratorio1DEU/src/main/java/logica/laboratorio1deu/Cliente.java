@@ -37,7 +37,7 @@ public class Cliente {
     }
 
     private int generarTiempoAleatorio() {
-        return (int) (Math.random() * 23) + 2; // Entre 2 y 24 
+        return (int) (Math.random() * 24) + 2; // Entre 2 y 25 
     }
 
     public int getNumeroCliente() {
@@ -48,6 +48,7 @@ public class Cliente {
         return tiempoTramiteSegundos;
     }
 
+    //metodo para generar la prioridad aleatoria para cada cliente
     private String generarPrioridadAleatoria(int numeroCliente) {
         Random rand = new Random();
         int randomPriority = rand.nextInt(4);
